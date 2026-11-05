@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-fraunces);
+  --color-cream: #fbf6ee;
+  --color-paper: #fffdf9;
+  --color-ink: #1f2a24;
+  --color-muted: #6b6f68;
+  --color-line: #e9e0d1;
+  --color-tomato: #d9512c;
+  --color-tomato-dark: #b93f1e;
+  --color-sage: #4f7d5c;
+  --color-sage-soft: #e7efe6;
+  --color-butter: #f4e3b5;
+}
+
+html,
+body {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+/* ── 3D die ── */
+.die-scene {
+  --size: 112px;
+  --half: 56px;
+  width: var(--size);
+  height: var(--size);
+  perspective: 700px;
+  cursor: pointer;
+}
+.die {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.25, 0.9, 0.3, 1.04);
+}
+.die-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  padding: 16px;
+  gap: 4px;
+  border-radius: 22px;
+  background: var(--color-tomato);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.18),
+    inset 0 -6px 0 rgba(0, 0, 0, 0.12);
+  backface-visibility: hidden;
+}
+.pip {
+  place-self: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-paper);
+}
+.pip-off {
+  visibility: hidden;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.pop-in {
+  animation: pop-in 0.35s ease-out backwards;
+}
+
+@keyframes pulse-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(217, 81, 44, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(217, 81, 44, 0);
+  }
+}
+.timer-done {
+  animation: pulse-ring 1.2s ease-in-out infinite;
+}
+
+/* ── die landing + shadow ── */
+.die-body {
+  width: 100%;
+  height: 100%;
+  perspective: 700px;
+  transform-origin: 50% 100%;
+}
+.die-scene {
+  position: relative;
+}
+.die-scene::after {
+  content: "";
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: -18px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(31, 42, 36, 0.14);
+  filter: blur(4px);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.die-rolling::after {
+  transform: scale(0.7);
+  opacity: 0.6;
+}
+
+/* ── bottom sheet ── */
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes sheet-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.sheet-up {
+  animation: sheet-up 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.sheet-fade {
+  animation: sheet-fade 0.25s ease-out both;
+}
+
+/* ── little pops ── */
+@keyframes energy-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.3) rotate(-8deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.energy-pop {
+  display: inline-block;
+  animation: energy-pop 0.4s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .die {
+    transition-duration: 0.01s;
+  }
+  .pop-in,
+  .sheet-up,
+  .sheet-fade,
+  .energy-pop,
+  .timer-done {
+    animation: none;
+  }
+  .die-scene::after {
+    transition: none;
+  }
+}
